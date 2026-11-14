@@ -67,14 +67,26 @@ else
   say "  (node не найден — шаг пропущен)"
 fi
 
-say "5. Обязательные файлы"
+say "5. Логика плагина (без Moodle)"
+if command -v php >/dev/null 2>&1; then
+  if php "$DIR/tools/logic-test.php" >/tmp/cosmolab-logic.log 2>&1; then
+    ok "$(grep -c '✓' /tmp/cosmolab-logic.log) проверок пройдено (tools/logic-test.php)"
+  else
+    bad "провалены проверки логики:"
+    sed -n '/✗/p' /tmp/cosmolab-logic.log | sed 's/^/      /'
+  fi
+else
+  say "  (php не найден — шаг пропущен)"
+fi
+
+say "6. Обязательные файлы"
 for f in version.php lib.php mod_form.php view.php db/install.xml db/access.php \
          lang/en/cosmolab.php lang/ru/cosmolab.php classes/helper.php \
          classes/privacy/provider.php amd/build/bridge.min.js; do
   if [ -f "$SRC/$f" ]; then ok "$f"; else bad "нет файла $f"; fi
 done
 
-say "6. Сборка ZIP"
+say "7. Сборка ZIP"
 if [ -x "$DIR/tools/build-zip.sh" ]; then
   if "$DIR/tools/build-zip.sh" >/dev/null 2>&1; then
     listing="$(unzip -l "$DIR/dist/mod_cosmolab.zip" 2>/dev/null || python3 -c "import zipfile,sys;print('\\n'.join(zipfile.ZipFile(sys.argv[1]).namelist()))" "$DIR/dist/mod_cosmolab.zip")"

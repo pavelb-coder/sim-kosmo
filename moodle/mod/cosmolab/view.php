@@ -75,7 +75,7 @@ $labname = $labs[$cosmolab->lab] ?? $cosmolab->lab;
 $missiontitle = \mod_cosmolab\helper::mission_title($cosmolab->missionid);
 
 $gradevalue = cosmolab_score_to_grade($cosmolab, $summary->score);
-$gradetext = format_float($gradevalue, 2) . ' / ' . format_float((float)$cosmolab->grade, 2);
+$gradetext = format_float($gradevalue, 2) . ' / ' . format_float(cosmolab_grade_max($cosmolab), 2);
 
 echo $OUTPUT->header();
 
@@ -92,7 +92,7 @@ echo html_writer::tag(
     get_string('mission', 'cosmolab') . ': ' . s($missiontitle !== '' ? $missiontitle : get_string('sandbox', 'cosmolab')),
     ['class' => 'cosmolab-chip']
 );
-if (!empty($cosmolab->gradeenabled)) {
+if (!empty($cosmolab->grade)) {
     echo html_writer::tag(
         'span',
         get_string('grade') . ': ' . $gradetext,
@@ -142,7 +142,7 @@ $PAGE->requires->js_call_amd('mod_cosmolab/bridge', 'init', [[
     'lab' => $cosmolab->lab,
     'missionId' => (string)$cosmolab->missionid,
     'missionTitle' => $missiontitle,
-    'gradeEnabled' => !empty($cosmolab->gradeenabled),
+    'gradeEnabled' => !empty($cosmolab->grade),
     'gradeMax' => (float)$cosmolab->grade,
     'completed' => (bool)$summary->completed,
     'score' => (float)$summary->score,

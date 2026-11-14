@@ -105,7 +105,7 @@ class submit_result extends external_api {
             'completed' => (bool)$record->completed,
             'score' => (float)$record->score,
             'grade' => (float)cosmolab_score_to_grade($cosmolab, $record->score),
-            'grademax' => (float)$cosmolab->grade,
+            'grademax' => (float)cosmolab_grade_max($cosmolab),
             'message' => get_string('resultsaved', 'cosmolab'),
         ];
     }

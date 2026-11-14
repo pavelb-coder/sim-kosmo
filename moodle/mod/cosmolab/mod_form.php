@@ -82,17 +82,9 @@ class mod_cosmolab_mod_form extends moodleform_mod {
         $mform->addRule('frameheight', null, 'numeric', null, 'client');
         $mform->addHelpButton('frameheight', 'frameheight', 'cosmolab');
 
-        // Grade.
-        $mform->addElement('header', 'cosmolabgradehdr', get_string('grade'));
-        $mform->addElement('selectyesno', 'gradeenabled', get_string('gradeenabled', 'cosmolab'));
-        $mform->setDefault('gradeenabled', 1);
-        $mform->addHelpButton('gradeenabled', 'gradeenabled', 'cosmolab');
-
-        $mform->addElement('text', 'grade', get_string('grademax', 'cosmolab'), ['size' => '6']);
-        $mform->setType('grade', PARAM_FLOAT);
-        $mform->setDefault('grade', 100);
-        $mform->addHelpButton('grade', 'grademax', 'cosmolab');
-        $mform->hideIf('grade', 'gradeenabled', 'eq', 0);
+        // Оценка: стандартные элементы Moodle (максимальный балл, шкала, категория, проходной балл).
+        // Настройка помогает выбрать и стандартное условие завершения «получена оценка».
+        $this->standard_grading_coursemodule_elements();
 
         // Hidden field keeps the custom completion rule value in the module table.
         $mform->addElement('hidden', 'completionmission', 0);
@@ -112,13 +104,6 @@ class mod_cosmolab_mod_form extends moodleform_mod {
      */
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
-
-        if (!empty($data['gradeenabled'])) {
-            $grade = unformat_float($data['grade'] ?? 0);
-            if ($grade === false || $grade <= 0) {
-                $errors['grade'] = get_string('errorgrade', 'cosmolab');
-            }
-        }
 
         if (!empty($data['baseurl']) && !preg_match('~^https?://~i', trim($data['baseurl']))) {
             $errors['baseurl'] = get_string('errorbaseurl', 'cosmolab');

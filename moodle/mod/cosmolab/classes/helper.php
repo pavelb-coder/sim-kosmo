@@ -174,7 +174,7 @@ class helper {
 
         $now = time();
         $missionid = clean_param((string)$missionid, PARAM_ALPHANUMEXT);
-        $progress = shorten_text(clean_param((string)$progress, PARAM_TEXT), 255, false, '');
+        $progress = shorten_text(clean_param((string)$progress, PARAM_TEXT), 300, false, '…');
         $score = max(0, min(100, (float)$score));
 
         $existing = $DB->get_record('cosmolab_progress', [
@@ -210,7 +210,7 @@ class helper {
             $record->id = $DB->insert_record('cosmolab_progress', $record);
         }
 
-        if (!empty($cosmolab->gradeenabled) && !empty($record->completed)) {
+        if (!empty($cosmolab->grade) && !empty($record->completed)) {
             \cosmolab_update_grades($cosmolab, $userid);
         }
 
@@ -218,7 +218,7 @@ class helper {
             $course = get_course($cosmolab->course);
             $completion = new \completion_info($course);
             if ($completion->is_enabled($cm)) {
-                $completion->update_state($cm, COMPLETION_COMPLETE, $userid);
+                $completion->update_state($cm, COMPLETION_UNKNOWN, $userid);
             }
         }
 

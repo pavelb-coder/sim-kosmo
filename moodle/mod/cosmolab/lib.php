@@ -117,7 +117,6 @@ function cosmolab_normalise_instance($data) {
         'baseurl' => \mod_cosmolab\helper::DEFAULT_BASE_URL,
         'embedmode' => 1,
         'frameheight' => 820,
-        'gradeenabled' => 0,
         'grade' => 100,
         'completionmission' => 0,
         'introformat' => FORMAT_HTML,
@@ -134,12 +133,10 @@ function cosmolab_normalise_instance($data) {
     $data->baseurl = \mod_cosmolab\helper::normalise_base_url($data->baseurl);
     $data->embedmode = empty($data->embedmode) ? 0 : 1;
     $data->frameheight = max(COSMOLAB_MIN_FRAME_HEIGHT, min(COSMOLAB_MAX_FRAME_HEIGHT, (int)$data->frameheight));
-    $data->gradeenabled = empty($data->gradeenabled) ? 0 : 1;
     $data->completionmission = empty($data->completionmission) ? 0 : 1;
+    // Оценка: положительное число — максимум в баллах, отрицательное — id шкалы (как в ядре Moodle),
+    // 0 — оценивание отключено.
     $data->grade = (float)$data->grade;
-    if ($data->grade <= 0) {
-        $data->grade = 100;
-    }
 
     return $data;
 }
@@ -166,16 +163,68 @@ function cosmolab_delete_instance($id) {
 }
 
 /**
+ * Returns the items of a grade scale selected in the activity settings.
+ *
+ * @param int $scaleid scale id
+ * @return array scale items (strings)
+ */
+function cosmolab_scale_items($scaleid) {
+    global $DB;
+
+    $scale = $DB->get_record('scale', ['id' => (int)$scaleid], 'id, scale');
+    if (!$scale) {
+        return [];
+    }
+
+    return array_values(array_filter(array_map('trim', explode(',', $scale->scale)), 'strlen'));
+}
+
+/**
+ * Maximum grade of the activity in gradebook units.
+ *
+ * @param stdClass $cosmolab instance record
+ * @return float 0 when grading is disabled
+ */
+function cosmolab_grade_max($cosmolab) {
+    $grade = isset($cosmolab->grade) ? (float)$cosmolab->grade : 0;
+
+    if ($grade > 0) {
+        return $grade;
+    }
+
+    if ($grade < 0) {
+        return (float)count(cosmolab_scale_items(abs($grade)));
+    }
+
+    return 0;
+}
+
+/**
  * Converts the stored score (percent, 0..100) into gradebook units of the activity.
  *
  * @param stdClass $cosmolab instance record
  * @param float $score percent score
- * @return float grade in 0..grademax range
+ * @return float grade in 0..grademax range (or the number of the scale item)
  */
 function cosmolab_score_to_grade($cosmolab, $score) {
     $score = max(0, min(100, (float)$score));
-    $grademax = !empty($cosmolab->grade) ? (float)$cosmolab->grade : 100;
-    return round($grademax * $score / 100, 2);
+    $grade = isset($cosmolab->grade) ? (float)$cosmolab->grade : 0;
+
+    if ($grade > 0) {
+        return round($grade * $score / 100, 2);
+    }
+
+    if ($grade < 0) {
+        // Шкала: процент переводится в ближайший пункт шкалы.
+        $count = count(cosmolab_scale_items(abs($grade)));
+        if ($count < 2) {
+            return $count;
+        }
+
+        return (int)round($score / 100 * ($count - 1)) + 1;
+    }
+
+    return 0;
 }
 
 /**
@@ -194,12 +243,17 @@ function cosmolab_grade_item_update($cosmolab, $grades = null) {
         'idnumber' => isset($cosmolab->cmidnumber) ? $cosmolab->cmidnumber : null,
     ];
 
-    if (empty($cosmolab->gradeenabled)) {
-        $params['gradetype'] = GRADE_TYPE_NONE;
-    } else {
+    $gradevalue = isset($cosmolab->grade) ? (float)$cosmolab->grade : 0;
+    if ($gradevalue > 0) {
         $params['gradetype'] = GRADE_TYPE_VALUE;
-        $params['grademax'] = (float)$cosmolab->grade;
+        $params['grademax'] = $gradevalue;
         $params['grademin'] = 0;
+    } else if ($gradevalue < 0) {
+        // Преподаватель выбрал шкалу — пункты шкалы переводятся из процентов.
+        $params['gradetype'] = GRADE_TYPE_SCALE;
+        $params['scaleid'] = (int)abs($gradevalue);
+    } else {
+        $params['gradetype'] = GRADE_TYPE_NONE;
     }
 
     if ($grades === 'reset') {
@@ -234,7 +288,8 @@ function cosmolab_grade_item_delete($cosmolab) {
 function cosmolab_update_grades($cosmolab, $userid = 0, $nullifnone = true) {
     global $DB;
 
-    if (empty($cosmolab->gradeenabled)) {
+    if (empty($cosmolab->grade)) {
+        // Оценивание выключено (тип оценки «Нет»).
         cosmolab_grade_item_update($cosmolab);
         return;
     }
@@ -294,7 +349,7 @@ function cosmolab_get_coursemodule_info($coursemodule) {
     global $DB;
 
     if (!$cosmolab = $DB->get_record('cosmolab', ['id' => $coursemodule->instance],
-            'id, name, intro, introformat, lab, missionid, gradeenabled, grade')) {
+            'id, name, intro, introformat, lab, missionid, grade, completionmission')) {
         return false;
     }
 
@@ -307,7 +362,8 @@ function cosmolab_get_coursemodule_info($coursemodule) {
     }
 
     if ($coursemodule->completion == COMPLETION_TRACKING_AUTOMATIC) {
-        $info->customdata['customcompletionrules']['completionmission'] = 1;
+        // Правило «задание выполнено» действует, только если преподаватель его включил.
+        $info->customdata['customcompletionrules']['completionmission'] = empty($cosmolab->completionmission) ? 0 : 1;
     }
 
     $info->customdata['lab'] = $cosmolab->lab;

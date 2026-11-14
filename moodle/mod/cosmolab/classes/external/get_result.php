@@ -73,7 +73,7 @@ class get_result extends external_api {
             'completed' => (bool)$summary->completed,
             'score' => (float)$summary->score,
             'grade' => (float)cosmolab_score_to_grade($cosmolab, $summary->score),
-            'grademax' => (float)$cosmolab->grade,
+            'grademax' => (float)cosmolab_grade_max($cosmolab),
             'progress' => (string)$summary->progress,
             'attempts' => (int)$summary->attempts,
             'missionid' => (string)$cosmolab->missionid,

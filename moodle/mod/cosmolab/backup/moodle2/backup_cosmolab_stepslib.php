@@ -41,7 +41,7 @@ class backup_cosmolab_activity_structure_step extends backup_activity_structure_
 
         $cosmolab = new backup_nested_element('cosmolab', ['id'], [
             'name', 'intro', 'introformat', 'lab', 'missionid', 'baseurl', 'embedmode', 'frameheight',
-            'gradeenabled', 'grade', 'completionmission', 'timecreated', 'timemodified',
+            'grade', 'completionmission', 'timecreated', 'timemodified',
         ]);
 
         $progress = new backup_nested_element('progress');

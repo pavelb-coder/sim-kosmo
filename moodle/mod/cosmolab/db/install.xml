@@ -15,7 +15,6 @@
         <FIELD NAME="baseurl" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT="https://pavelb-coder.github.io/sim-kosmo/" SEQUENCE="false" COMMENT="URL платформы КосмоЛаб"/>
         <FIELD NAME="embedmode" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false" COMMENT="Открывать платформу в компактном режиме embed=1"/>
         <FIELD NAME="frameheight" TYPE="int" LENGTH="6" NOTNULL="true" DEFAULT="820" SEQUENCE="false" COMMENT="Высота iframe, px"/>
-        <FIELD NAME="gradeenabled" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="grade" TYPE="number" LENGTH="10" DECIMALS="2" NOTNULL="true" DEFAULT="100" SEQUENCE="false"/>
         <FIELD NAME="completionmission" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Custom completion rule: mission passed"/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
