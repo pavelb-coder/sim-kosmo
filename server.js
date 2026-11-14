@@ -1,10 +1,25 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
+const { exec } = require('child_process');
 const { URL } = require('url');
 
-const PORT = Number(process.env.PORT) || 3000;
-const HOST = '0.0.0.0';
+// Parse CLI args (--port 8086, --open)
+const args = process.argv.slice(2);
+let cliPort = null;
+let autoOpen = false;
+for (let i = 0; i < args.length; i++) {
+  if ((args[i] === '--port' || args[i] === '-p') && args[i + 1]) {
+    cliPort = Number(args[i + 1]);
+    i++;
+  } else if (args[i] === '--open' || args[i] === '-o') {
+    autoOpen = true;
+  }
+}
+
+const PORT = cliPort || Number(process.env.PORT) || 8086;
+const HOST = process.env.HOST || '0.0.0.0';
 const ROOT = __dirname;
 
 const MIME_TYPES = {
@@ -19,6 +34,30 @@ const MIME_TYPES = {
   '.ico': 'image/x-icon',
   '.cosmolab': 'application/json; charset=utf-8'
 };
+
+function getLocalIPv4List() {
+  const nets = os.networkInterfaces();
+  const ips = [];
+  for (const name of Object.keys(nets)) {
+    for (const net of nets[name] || []) {
+      if (net.family === 'IPv4' && !net.internal) {
+        ips.push(net.address);
+      }
+    }
+  }
+  return ips;
+}
+
+function openBrowser(url) {
+  const platform = process.platform;
+  if (platform === 'win32') {
+    exec(`cmd /c start "" "${url}"`);
+  } else if (platform === 'darwin') {
+    exec(`open "${url}"`);
+  } else if (process.env.DISPLAY || process.env.WAYLAND_DISPLAY) {
+    exec(`xdg-open "${url}"`);
+  }
+}
 
 const server = http.createServer((req, res) => {
   try {
@@ -38,7 +77,6 @@ const server = http.createServer((req, res) => {
 
     fs.stat(safePath, (err, stats) => {
       if (err || !stats.isFile()) {
-        // Fallback to index.html for SPA routes
         const indexPath = path.join(ROOT, 'index.html');
         fs.readFile(indexPath, (readErr, data) => {
           if (readErr) {
@@ -72,12 +110,24 @@ const server = http.createServer((req, res) => {
         res.end(data);
       });
     });
-  } catch (e) {
+  } catch {
     res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
     res.end('Server Error');
   }
 });
 
 server.listen(PORT, HOST, () => {
-  console.log(`CosmoLab server listening on http://${HOST}:${PORT}`);
+  const localUrl = `http://localhost:${PORT}`;
+  console.log('====================================================');
+  console.log('  КосмоЛаб (sim-kosmo) — сервер успешно запущен!');
+  console.log(`  Локальный адрес:   ${localUrl}`);
+  for (const ip of getLocalIPv4List()) {
+    console.log(`  В локальной сети:  http://${ip}:${PORT}`);
+  }
+  console.log('  Для остановки нажмите Ctrl + C');
+  console.log('====================================================');
+
+  if (autoOpen) {
+    openBrowser(localUrl);
+  }
 });

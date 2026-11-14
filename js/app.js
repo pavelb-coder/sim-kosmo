@@ -380,6 +380,15 @@ class CosmoLabApp {
             • <strong>Проектный / НТО и ВИШ CanSat (144 ч):</strong> ПД-регуляторы, отказ датчиков, ИК/NDVI мониторинг пожаров и паводков.
           </p>
         </div>
+
+        <div class="formula-card">
+          <h4>4. Запуск онлайн из GitHub и в классе (порт 8086)</h4>
+          <p style="color:var(--text-1); margin-top:6px;">
+            • <strong>Онлайн (GitHub Pages):</strong> <a href="https://pavelb-coder.github.io/sim-kosmo/" target="_blank" rel="noopener" style="color:var(--cyan);">pavelb-coder.github.io/sim-kosmo</a><br>
+            • <strong>Windows:</strong> <code>start-windows.bat</code> → <code>http://localhost:8086</code><br>
+            • <strong>Ubuntu:</strong> <code>./start-ubuntu.sh</code> → <code>http://0.0.0.0:8086</code>
+          </p>
+        </div>
       </div>
 
       <div class="formula-card" style="margin-top:14px;">

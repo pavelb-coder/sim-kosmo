@@ -1,10 +1,16 @@
 {
   "name": "sim-kosmo",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "КосмоЛаб — виртуальные лаборатории и практикумы для Космоквантума",
+  "homepage": "https://pavelb-coder.github.io/sim-kosmo/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pavelb-coder/sim-kosmo.git"
+  },
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js --port 8086",
+    "start:open": "node server.js --port 8086 --open"
   },
   "license": "MIT"
 }
