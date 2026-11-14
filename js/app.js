@@ -222,10 +222,6 @@ class CosmoLabApp {
       modal.classList.remove('hidden');
     });
 
-    document.getElementById('btn-open-mentor').addEventListener('click', () => {
-      this.openMentorModal();
-    });
-
     document.getElementById('btn-save-file').addEventListener('click', () => {
       this.saveCosmoLabFile();
     });
@@ -357,65 +353,6 @@ class CosmoLabApp {
     };
 
     renderList(filterLab);
-  }
-
-  openMentorModal() {
-    const modal = document.getElementById('modal-mentor');
-    const body = document.getElementById('modal-mentor-body');
-    modal.classList.remove('hidden');
-
-    const baseUrl = window.location.origin + window.location.pathname;
-    const iframeCode = `<iframe src="${baseUrl}?lab=${this.activeLabKey}&embed=1" width="100%" height="640" style="border:1px solid #253554; border-radius:12px;" allowfullscreen></iframe>`;
-
-    body.innerHTML = `
-      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:14px;">
-        <div class="formula-card">
-          <h4>1. Мгновенная выдача заданий группе</h4>
-          <p style="color:var(--text-1); margin-top:6px;">
-            Как и на <code>урокихимии.рф</code> и <code>урокробототехники.рф</code>, ученикам не нужны аккаунты и права администратора на ПК Кванториума. Отправьте ссылку в чат группы — у каждого откроется индивидуальный предсобранный стенд (включая сценарии поиска неисправностей!).
-          </p>
-        </div>
-
-        <div class="formula-card">
-          <h4>2. Сдача работ файлом .cosmolab</h4>
-          <p style="color:var(--text-1); margin-top:6px;">
-            Кнопка <strong>«Скачать .cosmolab»</strong> сохраняет схему, параметры ракеты/орбиты и код БКУ в компактный файл. Ученик прикрепляет его к заданию, а наставник просто перетаскивает файл в окно браузера для проверки.
-          </p>
-        </div>
-
-        <div class="formula-card">
-          <h4>3. Привязка к модулям Космоквантума (360 ч)</h4>
-          <p style="color:var(--text-1); margin-top:6px;">
-            • <strong>Вводный модуль (72 ч):</strong> Ракетомоделирование, аэротруба, базовые орбиты.<br>
-            • <strong>Базовый модуль (144 ч):</strong> Стенд «ОрбиКрафт», УКВ радиосвязь и Доплер, СЖО станции.<br>
-            • <strong>Проектный / НТО и ВИШ CanSat (144 ч):</strong> ПД-регуляторы, отказ датчиков, ИК/NDVI мониторинг пожаров и паводков.<br>
-            • <strong>Ракетодинамика в стиле OpenRocket:</strong> дерево компонентов, метод Барроумена, 1–2 ступени, Dual-Deploy, импорт двигателей RASP <code>.eng</code> и экспорт проекта <code>.ork.json</code>.
-          </p>
-        </div>
-
-        <div class="formula-card">
-          <h4>4. Запуск онлайн из GitHub и в классе (порт 8086)</h4>
-          <p style="color:var(--text-1); margin-top:6px;">
-            • <strong>Онлайн (GitHub Pages):</strong> <a href="https://pavelb-coder.github.io/sim-kosmo/" target="_blank" rel="noopener" style="color:var(--cyan);">pavelb-coder.github.io/sim-kosmo</a><br>
-            • <strong>Windows:</strong> <code>start-windows.bat</code> → <code>http://localhost:8086</code><br>
-            • <strong>Ubuntu:</strong> <code>./start-ubuntu.sh</code> → <code>http://0.0.0.0:8086</code>
-          </p>
-        </div>
-      </div>
-
-      <div class="formula-card" style="margin-top:14px;">
-        <h4>Встраивание живой лаборатории на сайт Кванториума / Moodle / Stepik</h4>
-        <p style="color:var(--text-1); margin:4px 0 8px;">Скопируйте готовый HTML-код для текущей открытой лаборатории (параметр <code>embed=1</code> включает компактный режим):</p>
-        <textarea class="code-editor" style="min-height:68px;" readonly id="mentor-iframe-code">${iframeCode}</textarea>
-        <button class="btn btn-primary btn-sm" id="mentor-copy-embed" style="margin-top:8px;">Скопировать код iframe</button>
-      </div>
-    `;
-
-    body.querySelector('#mentor-copy-embed').addEventListener('click', () => {
-      const txt = body.querySelector('#mentor-iframe-code').value;
-      navigator.clipboard?.writeText(txt);
-      this.toast('Код встраивания <iframe> скопирован в буфер обмена!', 'success');
-    });
   }
 
   saveCosmoLabFile() {

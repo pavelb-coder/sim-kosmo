@@ -74,6 +74,24 @@ irm https://raw.githubusercontent.com/pavelb-coder/sim-kosmo/main/run-online.ps1
 
 ---
 
+## 🌿 Ветки репозитория
+
+- **`main`** — платформа «КосмоЛаб» и GitHub Pages: [pavelb-coder.github.io/sim-kosmo](https://pavelb-coder.github.io/sim-kosmo/).
+- **`moodle-plugin`** — то же самое плюс плагин `mod_cosmolab` для Moodle (каталог `moodle/`, готовый ZIP и инструкция).
+  Правило репозитория: **любое обновление `main` сопровождается обновлением ветки `moodle-plugin`** —
+  она перебазируется на новую вершину `main`, поэтому в ней всегда актуальная платформа и свежий плагин.
+  Синхронизация одной командой:
+
+  ```bash
+  ./tools/sync-branches.sh --push-main "что изменилось"
+  ```
+
+  (без флага `--push-main` скрипт только перебазирует и пушит ветку на актуальный `main`).
+
+Плагин для Moodle: [MOODLE-PLUGIN.md](https://github.com/pavelb-coder/sim-kosmo/blob/moodle-plugin/MOODLE-PLUGIN.md).
+
+---
+
 ## 🛰 Состав платформы
 
 - **5 интерактивных лабораторий:** CubeSat / «ОрбиКрафт», Орбитальная механика (РК4 + формула Циолковского), **Ракета + CanSat с полным функционалом OpenRocket**, Приёмная станция УКВ Web-SDR + мультиспектральный анализ ДЗЗ (RGB / NIR / TIR / NDVI), СЖО орбитальной станции.

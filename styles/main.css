@@ -76,8 +76,7 @@ button, input, select, textarea {
   width: 100vw;
 }
 
-.app-shell.embed-mode .topbar-brand-sub,
-.app-shell.embed-mode .btn-mentor-only {
+.app-shell.embed-mode .topbar-brand-sub {
   display: none !important;
 }
 
