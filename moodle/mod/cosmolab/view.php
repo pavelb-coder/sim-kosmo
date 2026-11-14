@@ -143,7 +143,7 @@ $PAGE->requires->js_call_amd('mod_cosmolab/bridge', 'init', [[
     'missionId' => (string)$cosmolab->missionid,
     'missionTitle' => $missiontitle,
     'gradeEnabled' => !empty($cosmolab->grade),
-    'gradeMax' => (float)$cosmolab->grade,
+    'gradeMax' => (float)cosmolab_grade_max($cosmolab),
     'completed' => (bool)$summary->completed,
     'score' => (float)$summary->score,
 ]]);

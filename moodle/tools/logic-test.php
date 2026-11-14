@@ -68,8 +68,15 @@ class stub_db {
         }
         return false;
     }
+    public $progress = [];
     public function record_exists($table, $conditions) {
         return false;
+    }
+    public function get_records($table, $conditions = [], $sort = '', $fields = '*', $limitfrom = 0, $limitnum = 0) {
+        if ($table === 'cosmolab_progress') {
+            return $this->progress;
+        }
+        return [];
     }
 }
 $DB = new stub_db();
@@ -166,6 +173,30 @@ check('baseurl со слэшем', $data->baseurl, 'http://x/');
 check('оценка сохранена', $data->grade, 12.5);
 check('completionmission по умолчанию', $data->completionmission, 0);
 check('embedmode нормализован', $data->embedmode, 0);
+
+echo "user_progress\n";
+$activity = (object)['id' => 1, 'missionid' => 'strato_sounder'];
+$summary = \mod_cosmolab\helper::user_progress($activity, 5);
+check('нет записей -> не зачтено', $summary->completed, false);
+check('нет записей -> балл 0', $summary->score, 0.0);
+check('нет записей -> пустой прогресс', $summary->progress, '');
+
+$GLOBALS['DB']->progress = [
+    11 => (object)[
+        'completed' => 0, 'score' => 40, 'progress' => 'Апогей 1200 м', 'attempts' => 1, 'timemodified' => 300,
+    ],
+    12 => (object)[
+        'completed' => 1, 'score' => 60, 'progress' => 'Апогей 2400 м', 'attempts' => 2, 'timemodified' => 200,
+    ],
+    13 => (object)[
+        'completed' => 1, 'score' => 90, 'progress' => 'Апогей 3050 м', 'attempts' => 1, 'timemodified' => 100,
+    ],
+];
+$summary = \mod_cosmolab\helper::user_progress($activity, 5);
+check('зачтено', $summary->completed, true);
+check('лучший балл из зачтённых', $summary->score, 90.0);
+check('прогресс из свежей записи', $summary->progress, 'Апогей 1200 м');
+check('попытки суммируются', $summary->attempts, 4);
 
 echo "завершение\n";
 $cm = (object)['instance' => 1, 'customdata' => ['customcompletionrules' => ['completionmission' => 1]]];

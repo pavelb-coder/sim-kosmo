@@ -250,18 +250,22 @@ class helper {
             'userid' => $userid,
         ], 'timemodified DESC');
 
+        $first = true;
         foreach ($records as $record) {
             $summary->attempts += (int)$record->attempts;
+
+            // Последнее сообщение о прогрессе — из самой свежей записи.
+            if ($first) {
+                $summary->progress = (string)$record->progress;
+                $summary->timemodified = (int)$record->timemodified;
+                $first = false;
+            }
+
             if (!empty($record->completed)) {
                 $summary->completedcount++;
-                if (!$summary->completed) {
-                    $summary->completed = true;
-                    $summary->score = (float)$record->score;
-                    $summary->progress = (string)$record->progress;
-                    $summary->timemodified = (int)$record->timemodified;
-                }
-            } else if ($summary->progress === '') {
-                $summary->progress = (string)$record->progress;
+                $summary->completed = true;
+                // Балл — лучший из зачтённых, как и в журнале оценок.
+                $summary->score = max($summary->score, (float)$record->score);
             }
         }
 
