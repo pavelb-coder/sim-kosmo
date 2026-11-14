@@ -1,0 +1,102 @@
+/*
+ * Styles for the КосмоЛаб activity module.
+ *
+ * @package    mod_cosmolab
+ * @copyright  2026 КосмоЛаб / sim-kosmo
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+.path-mod-cosmolab .cosmolab-status {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 10px;
+}
+
+.path-mod-cosmolab .cosmolab-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 11px;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    background: #f1f5f9;
+    color: #1e293b;
+    font-size: 0.85rem;
+    font-weight: 600;
+    line-height: 1.35;
+}
+
+.path-mod-cosmolab .cosmolab-chip.ok {
+    background: #dcfce7;
+    border-color: #86efac;
+    color: #166534;
+}
+
+.path-mod-cosmolab .cosmolab-chip.pending {
+    background: #fef3c7;
+    border-color: #fcd34d;
+    color: #92400e;
+}
+
+.path-mod-cosmolab .cosmolab-progress {
+    margin: 0 0 10px;
+    padding: 8px 12px;
+    border-left: 3px solid #0ea5e9;
+    background: #f8fafc;
+    border-radius: 0 6px 6px 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.85rem;
+    color: #334155;
+    min-height: 1.2em;
+}
+
+.path-mod-cosmolab .cosmolab-frame-wrap {
+    position: relative;
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.14);
+    background: #050912;
+    box-shadow: 0 6px 24px rgba(15, 23, 42, 0.14);
+}
+
+.path-mod-cosmolab .cosmolab-frame {
+    display: block;
+    width: 100%;
+    border: 0;
+    background: #050912;
+}
+
+.path-mod-cosmolab .cosmolab-openlink {
+    display: inline-block;
+    margin: 10px 0 4px;
+    font-size: 0.85rem;
+}
+
+.path-mod-cosmolab .cosmolab-note {
+    margin: 2px 0 16px;
+    font-size: 0.78rem;
+    color: #64748b;
+    max-width: 900px;
+}
+
+.path-mod-cosmolab .cosmolab-report-head {
+    margin: 0 0 12px;
+    font-size: 0.9rem;
+    color: #475569;
+}
+
+.path-mod-cosmolab .cosmolab-report-table td {
+    vertical-align: middle;
+}
+
+.path-mod-cosmolab .cosmolab-index td {
+    vertical-align: top;
+}
+
+@media (max-width: 640px) {
+    .path-mod-cosmolab .cosmolab-chip {
+        font-size: 0.78rem;
+        padding: 3px 9px;
+    }
+}

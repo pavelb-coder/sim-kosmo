@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="mod/cosmolab/db" VERSION="2026111400" COMMENT="XMLDB file for mod_cosmolab"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd">
+  <TABLES>
+    <TABLE NAME="cosmolab" COMMENT="КосмоЛаб — экземпляры элемента курса (виртуальные лаборатории)">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="intro" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="lab" TYPE="char" LENGTH="20" NOTNULL="true" DEFAULT="cubesat" SEQUENCE="false" COMMENT="Ключ лаборатории: cubesat, orbit, rocket, sdr, lss"/>
+        <FIELD NAME="missionid" TYPE="char" LENGTH="100" NOTNULL="true" DEFAULT="" SEQUENCE="false" COMMENT="Идентификатор практикума или пустая строка"/>
+        <FIELD NAME="baseurl" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT="https://pavelb-coder.github.io/sim-kosmo/" SEQUENCE="false" COMMENT="URL платформы КосмоЛаб"/>
+        <FIELD NAME="embedmode" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false" COMMENT="Открывать платформу в компактном режиме embed=1"/>
+        <FIELD NAME="frameheight" TYPE="int" LENGTH="6" NOTNULL="true" DEFAULT="820" SEQUENCE="false" COMMENT="Высота iframe, px"/>
+        <FIELD NAME="gradeenabled" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="grade" TYPE="number" LENGTH="10" DECIMALS="2" NOTNULL="true" DEFAULT="100" SEQUENCE="false"/>
+        <FIELD NAME="completionmission" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Custom completion rule: mission passed"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="course" UNIQUE="false" FIELDS="course"/>
+        <INDEX NAME="lab" UNIQUE="false" FIELDS="lab"/>
+      </INDEXES>
+    </TABLE>
+    <TABLE NAME="cosmolab_progress" COMMENT="Progress and results of students inside КосмоЛаб activities">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="cosmolabid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="missionid" TYPE="char" LENGTH="100" NOTNULL="true" DEFAULT="" SEQUENCE="false"/>
+        <FIELD NAME="lab" TYPE="char" LENGTH="20" NOTNULL="true" DEFAULT="" SEQUENCE="false"/>
+        <FIELD NAME="progress" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="completed" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="score" TYPE="number" LENGTH="10" DECIMALS="2" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="attempts" TYPE="int" LENGTH="6" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="cosmolabid" TYPE="foreign" FIELDS="cosmolabid" REFTABLE="cosmolab" REFFIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="userid" UNIQUE="false" FIELDS="userid"/>
+        <INDEX NAME="cosmolabid-userid" UNIQUE="false" FIELDS="cosmolabid, userid"/>
+        <INDEX NAME="missionid" UNIQUE="false" FIELDS="missionid"/>
+      </INDEXES>
+    </TABLE>
+  </TABLES>
+</XMLDB>
