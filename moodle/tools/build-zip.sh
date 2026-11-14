@@ -24,7 +24,10 @@ mkdir -p "$STAGE/cosmolab"
 cp -r "$SRC/." "$STAGE/cosmolab/"
 rm -rf "$STAGE/cosmolab/tests" "$STAGE/cosmolab/README.md" "$STAGE/cosmolab/node_modules"
 
-( cd "$STAGE" && zip -qr "$OUT/$NAME" cosmolab )
+# Детерминированная сборка: фиксируем время файлов и порядок записей,
+# чтобы одинаковые исходники давали побайтово одинаковый архив.
+find "$STAGE/cosmolab" -exec touch -t 202601010000.00 {} +
+( cd "$STAGE" && find cosmolab | LC_ALL=C sort | zip -qX "$OUT/$NAME" -@ )
 
 echo "Готово: $OUT/$NAME ($(du -h "$OUT/$NAME" | cut -f1))"
 echo "Установка: Администрирование сайта → Плагины → Установка плагинов → $NAME"
