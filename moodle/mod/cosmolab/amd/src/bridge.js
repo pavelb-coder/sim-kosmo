@@ -68,7 +68,8 @@ define(['core/ajax', 'core/str'], function(Ajax, Str) {
         if (!chip || !config.gradeEnabled) {
             return;
         }
-        var value = Math.round(config.gradeMax * Math.max(0, Math.min(100, score)) * 100 / 100) / 100;
+        var percent = Math.max(0, Math.min(100, parseFloat(score) || 0));
+        var value = Math.round(config.gradeMax * percent) / 100;
         chip.textContent = value.toFixed(2) + ' / ' + config.gradeMax.toFixed(2);
     }
 
@@ -154,6 +155,11 @@ define(['core/ajax', 'core/str'], function(Ajax, Str) {
         }
         var data = event.data;
         if (!data || typeof data !== 'object' || data.source !== 'cosmolab') {
+            return;
+        }
+
+        // Задание в элементе курса фиксировано: результаты других практикумов игнорируем.
+        if (config.missionId && data.missionId && data.missionId !== config.missionId) {
             return;
         }
 

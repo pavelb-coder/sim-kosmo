@@ -181,7 +181,10 @@ vendor/bin/phpunit --testsuite mod_cosmolab_testsuite
 # Проверка стиля кода (Moodle CodeSniffer)
 vendor/bin/phpcs --standard=moodle mod/cosmolab
 
-# Пересборка AMD-модуля после правки amd/src/bridge.js
+# Пересборка AMD-модуля после правки amd/src/bridge.js (Node.js не нужен)
+python3 moodle/tools/build-amd.py
+
+# Вариант со стандартным инструментарием Moodle
 cd /path/to/moodle && npx grunt amd --root=mod/cosmolab
 ```
 

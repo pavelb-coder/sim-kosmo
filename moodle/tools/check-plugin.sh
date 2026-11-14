@@ -67,7 +67,18 @@ else
   say "  (node не найден — шаг пропущен)"
 fi
 
-say "5. Логика плагина (без Moodle)"
+say "5. AMD: сборка соответствует исходнику"
+if command -v python3 >/dev/null 2>&1; then
+  if python3 "$DIR/tools/build-amd.py" --check >/dev/null 2>&1; then
+    ok "amd/build/bridge.min.js собран из amd/src/bridge.js"
+  else
+    bad "amd/build/bridge.min.js устарел — запустите tools/build-amd.py"
+  fi
+else
+  say "  (python3 не найден — шаг пропущен)"
+fi
+
+say "6. Логика плагина (без Moodle)"
 if command -v php >/dev/null 2>&1; then
   if php "$DIR/tools/logic-test.php" >/tmp/cosmolab-logic.log 2>&1; then
     ok "$(grep -c '✓' /tmp/cosmolab-logic.log) проверок пройдено (tools/logic-test.php)"
@@ -79,14 +90,14 @@ else
   say "  (php не найден — шаг пропущен)"
 fi
 
-say "6. Обязательные файлы"
+say "7. Обязательные файлы"
 for f in version.php lib.php mod_form.php view.php db/install.xml db/access.php \
          lang/en/cosmolab.php lang/ru/cosmolab.php classes/helper.php \
          classes/privacy/provider.php amd/build/bridge.min.js; do
   if [ -f "$SRC/$f" ]; then ok "$f"; else bad "нет файла $f"; fi
 done
 
-say "7. Сборка ZIP"
+say "8. Сборка ZIP"
 if [ -x "$DIR/tools/build-zip.sh" ]; then
   if "$DIR/tools/build-zip.sh" >/dev/null 2>&1; then
     listing="$(unzip -l "$DIR/dist/mod_cosmolab.zip" 2>/dev/null || python3 -c "import zipfile,sys;print('\\n'.join(zipfile.ZipFile(sys.argv[1]).namelist()))" "$DIR/dist/mod_cosmolab.zip")"

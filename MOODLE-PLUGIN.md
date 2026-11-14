@@ -19,6 +19,7 @@ moodle/
 ├── tools/build-zip.sh       сборка установочного архива
 ├── tools/check-plugin.sh    самопроверка плагина без установленного Moodle
 ├── tools/logic-test.php     автономный тест логики (35 проверок, без Moodle)
+├── tools/build-amd.py       сборка amd/build/bridge.min.js из amd/src (без Node.js)
 └── dist/mod_cosmolab.zip    готовый архив для «Установки плагинов» в Moodle
 ```
 
@@ -70,9 +71,14 @@ git rebase origin/main      # подтянуть свежую платформу
 cd moodle && ./tools/check-plugin.sh && ./tools/build-zip.sh
 ```
 
-После правок `amd/src/bridge.js` не забудьте пересобрать `amd/build/bridge.min.js`
-(`npx grunt amd --root=mod/cosmolab` в каталоге Moodle) — в репозитории лежит уже
-собранная версия, поэтому Node.js при установке не требуется.
+После правок `amd/src/bridge.js` пересоберите `amd/build/bridge.min.js`:
+
+```bash
+python3 moodle/tools/build-amd.py      # без Node.js
+```
+
+В репозитории лежит уже собранная версия, поэтому Node.js при установке не требуется.
+`tools/check-plugin.sh` отдельно проверяет, что сборка соответствует исходнику.
 
 ---
 
