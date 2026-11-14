@@ -153,28 +153,41 @@ export const MISSIONS = [
     }
   },
 
-  // === LAB 3: ROCKET & CANSAT ===
+  // === LAB 3: ROCKET & CANSAT (OpenRocket) ===
   {
     id: 'fix_tumble',
     lab: 'rocket',
     track: 'Вводный · 10–13 лет',
     badge: 'Аэродинамика',
     title: '7. Авария: кувырок ракеты (ЦД впереди ЦМ)',
-    desc: 'Учебная ракета с куцыми стабилизаторами неустойчива и уходит в кувырок сразу после схода с направляющей. Добейтесь запаса устойчивости 1.3–2.8 калибра и мягкой посадки.',
-    hint: 'В «Аэродинамической трубе» увеличьте размах стабилизаторов и добавьте носовой балласт (30–60 г), чтобы красный маркер ЦД ушёл к хвосту позади синего маркера ЦМ.',
+    desc: 'Учебная ракета с куцыми стабилизаторами неустойчива: красный маркер ЦД стоит впереди синего ЦМ, и после схода с направляющей ракета уходит в кувырок. Добейтесь запаса устойчивости 1.2–2.8 калибра, апогея > 180 м и мягкой посадки.',
+    hint: 'В инспекторе стабилизаторов увеличьте размах до 70–100 мм (или поставьте 4 стабилизатора), а в инспекторе обтекателя добавьте 30–60 г носового балласта — маркер ЦД уйдёт к хвосту за ЦМ. Затем обязательно нажмите «▶ Симуляция» и дождитесь посадки.',
     preset: {
+      caliberMm: 70,
       noseShape: 'blunt',
-      bodyLenCm: 48,
-      finSpanCm: 3.2,
-      finCount: 3,
+      noseLenMm: 120,
       noseMassG: 0,
+      bodyMaterial: 'fiberglass',
+      surfaceFinish: 'gloss',
+      bodyLenMm: 480,
+      wallMm: 1.8,
       hasCanSat: true,
+      payloadMassG: 310,
+      payloadPosFrac: 0.28,
+      finCount: 3,
+      finRootMm: 90,
+      finTipMm: 40,
+      finSpanMm: 30,
+      finSweepMm: 20,
+      finProfile: 'rounded',
+      finMaterial: 'fiberglass',
+      boatTailEnabled: false,
       motorId: 'rd1_100',
-      chuteDiamCm: 65,
-      deployMode: 'baro'
+      deployMode: 'baro',
+      chuteDiamCm: 65
     },
     check(state) {
-      if (state.landedOk && state.stabilityCal >= 1.2 && state.maxAltM > 180) {
+      if (state.landedOk && state.stabilityCal >= 1.2 && state.stabilityCal <= 2.8 && state.maxAltM > 180) {
         return {
           ok: true,
           msg: `Стабильный полёт! Апогей ${state.maxAltM.toFixed(0)} м, запас устойчивости ${state.stabilityCal.toFixed(2)} кал.`
@@ -182,7 +195,7 @@ export const MISSIONS = [
       }
       return {
         ok: false,
-        progress: `Запас устойчивости: ${state.stabilityCal.toFixed(2)} кал. · Статус посадки: ${state.flightStatusText}`
+        progress: `Запас устойчивости: ${state.stabilityCal.toFixed(2)} кал. (цель 1.2–2.8) · Апогей: ${state.maxAltM.toFixed(0)} м · ${state.flightStatusText}`
       };
     }
   },
@@ -191,23 +204,39 @@ export const MISSIONS = [
     lab: 'rocket',
     track: 'ВИШ «CanSat в России» · 13–17 лет',
     badge: 'Система спасения',
-    title: '8. Выброс и мягкая посадка CanSat с высоты > 1000 м',
-    desc: 'Таймер вышибного заряда настроен неверно (срабатывает на разгоне и рвёт стропы!). Настройте раскрытие по барометру в апогее, наберите > 1000 м и посадите аппарат со скоростью < 6.5 м/с.',
-    hint: 'Переключите систему спасения на «Бортовой барометр CanSat (апогей)», выберите двигатель «Импульс-250» и купол парашюта 75–90 см.',
+    title: '8. Выброс и мягкая посадка CanSat с высоты > 850 м',
+    desc: 'Таймер вышибного заряда настроен неверно: он срабатывает на 2-й секунде разгона и рвёт стропы. Настройте раскрытие по бортовому барометру в апогее, наберите > 850 м и посадите аппарат со скоростью < 6.5 м/с.',
+    hint: 'В инспекторе системы спасения переключите схему на «Барометр — купол в апогее» и увеличьте основной купол до 80–90 см. Двигатель «Импульс-250» оставьте — это штатный носитель ВИШ. После правок нажмите «▶ Симуляция».',
     preset: {
+      caliberMm: 70,
       noseShape: 'ogive',
-      bodyLenCm: 65,
-      finSpanCm: 8.5,
-      finCount: 4,
-      noseMassG: 35,
+      noseLenMm: 165,
+      noseMassG: 30,
+      bodyMaterial: 'fiberglass',
+      surfaceFinish: 'gloss',
+      bodyLenMm: 640,
+      wallMm: 1.8,
       hasCanSat: true,
+      payloadMassG: 310,
+      payloadPosFrac: 0.28,
+      finCount: 4,
+      finRootMm: 120,
+      finTipMm: 52,
+      finSpanMm: 82,
+      finSweepMm: 55,
+      finProfile: 'rounded',
+      finMaterial: 'fiberglass',
+      boatTailEnabled: false,
       motorId: 'imp_250',
-      chuteDiamCm: 45,
       deployMode: 'timer',
-      timerSec: 2.0
+      drogueDiamCm: 28,
+      chuteDiamCm: 45,
+      mainDeployAltM: 250,
+      timerSec: 2.0,
+      twoStage: false
     },
     check(state) {
-      if (state.landedOk && state.maxAltM >= 1000 && state.touchdownSpeed <= 6.5) {
+      if (state.landedOk && state.maxAltM >= 850 && state.touchdownSpeed <= 6.5) {
         return {
           ok: true,
           msg: `Миссия CanSat выполнена! Апогей ${state.maxAltM.toFixed(0)} м, скорость касания ${state.touchdownSpeed.toFixed(1)} м/с.`
@@ -215,7 +244,7 @@ export const MISSIONS = [
       }
       return {
         ok: false,
-        progress: `Макс. высота: ${state.maxAltM.toFixed(0)} м (цель > 1000 м) · Посадка: ${state.flightStatusText}`
+        progress: `Макс. высота: ${state.maxAltM.toFixed(0)} м (цель ≥ 850 м) · Касание: ${state.touchdownSpeed.toFixed(1)} м/с · ${state.flightStatusText}`
       };
     }
   },
@@ -223,29 +252,141 @@ export const MISSIONS = [
     id: 'strato_sounder',
     lab: 'rocket',
     track: 'Проектный · 14–18 лет',
-    badge: 'Оптимизация РН',
-    title: '9. Высотный метеозонд: апогей свыше 3 000 м',
-    desc: 'Спроектируйте лёгкую углепластиковую ракету минимального сопротивления с двигателем «Страто-900», достигните высоты > 3 000 м и спасите полезную нагрузку.',
-    hint: 'Выберите оживальный или параболический обтекатель, углепластиковый корпус, умеренный размах стреловидных стабилизаторов (устойчивость ~1.5 кал.) и двигатель «Страто-900».',
+    badge: 'Сверхзвук',
+    title: '9. Сверхзвуковой стратосферный зонд: апогей 3 000 м и Мах > 1.2',
+    desc: 'Тяжёлый картонный зонд на двигателе «Импульс-250» едва берёт 800 м. Спроектируйте лёгкую углепластиковую ракету минимального сопротивления с двигателем K550W, выйдите на сверхзвук (Мах ≥ 1.2), поднимитесь выше 3 000 м и верните борт целым.',
+    hint: 'Поставьте двигатель K550W, корпус и стабилизаторы — углепластик, обтекатель «Ряд Хаака», включите Boat-Tail, размах стабилизаторов 95–110 мм и 100–120 г носового балласта для запаса ~1.3 кал. Схема спасения — Dual-Deploy. После сборки нажмите «▶ Симуляция».',
     preset: {
+      caliberMm: 70,
       noseShape: 'cone',
-      bodyMaterial: 'cardboard',
-      bodyLenCm: 75,
-      finSpanCm: 9.5,
-      finCount: 4,
+      noseLenMm: 165,
       noseMassG: 45,
+      bodyMaterial: 'cardboard',
+      surfaceFinish: 'matte',
+      bodyLenMm: 750,
+      wallMm: 1.8,
       hasCanSat: true,
+      payloadMassG: 310,
+      payloadPosFrac: 0.28,
+      finCount: 4,
+      finRootMm: 120,
+      finTipMm: 52,
+      finSpanMm: 95,
+      finSweepMm: 55,
+      finProfile: 'rounded',
+      finMaterial: 'cardboard',
+      boatTailEnabled: false,
       motorId: 'imp_250',
-      chuteDiamCm: 80,
-      deployMode: 'baro'
+      deployMode: 'baro',
+      chuteDiamCm: 80
     },
     check(state) {
-      if (state.landedOk && state.maxAltM >= 3000) {
-        return { ok: true, msg: `Рекорд взят! Апогей ${state.maxAltM.toFixed(0)} м с успешным возвращением зонда.` };
+      if (state.landedOk && state.maxAltM >= 3000 && state.maxMach >= 1.2) {
+        return {
+          ok: true,
+          msg: `Стратосферный рекорд! Апогей ${state.maxAltM.toFixed(0)} м, Мах ${state.maxMach.toFixed(2)}, посадка ${state.touchdownSpeed.toFixed(1)} м/с.`
+        };
       }
       return {
         ok: false,
-        progress: `Достигнутый апогей: ${state.maxAltM.toFixed(0)} м (цель ≥ 3000 м + мягкая посадка)`
+        progress: `Апогей: ${state.maxAltM.toFixed(0)} м (цель ≥ 3000) · Мах ${state.maxMach.toFixed(2)} (цель ≥ 1.2) · ${state.flightStatusText}`
+      };
+    }
+  },
+  {
+    id: 'two_stage_ascent',
+    lab: 'rocket',
+    track: 'Проектный · 14–18 лет',
+    badge: 'Две ступени',
+    title: '10. Тандем: разделение ступеней и апогей > 1 500 м',
+    desc: 'Проект «Тандем-Страто» летит как одноступенчатая ракета и недобирает высоту. Включите двухступенчатую схему: бустер I285R разгоняет связку, затем отделяется, и через заданную задержку стартует маршевый G80T. Нужен апогей > 1 500 м с мягкой посадкой.',
+    hint: 'В дереве компонентов выберите «Ступень 1 · бустер» и включите двухступенчатую схему, проверьте двигатель бустера I285R, задержку запуска 2-й ступени 0.6–0.9 с и Dual-Deploy с основным куполом на 250–300 м, затем нажмите «▶ Симуляция».',
+    preset: {
+      caliberMm: 66,
+      noseShape: 'haack',
+      noseLenMm: 185,
+      noseMassG: 35,
+      bodyMaterial: 'carbon',
+      surfaceFinish: 'polished',
+      bodyLenMm: 520,
+      wallMm: 1.5,
+      hasCanSat: false,
+      payloadMassG: 140,
+      payloadPosFrac: 0.26,
+      finCount: 4,
+      finRootMm: 95,
+      finTipMm: 42,
+      finSpanMm: 68,
+      finSweepMm: 48,
+      finProfile: 'airfoil',
+      finMaterial: 'carbon',
+      boatTailEnabled: false,
+      motorId: 'g80',
+      deployMode: 'dual',
+      drogueDiamCm: 25,
+      chuteDiamCm: 70,
+      mainDeployAltM: 280,
+      twoStage: false,
+      boosterLenMm: 340,
+      boosterFinSpanMm: 96,
+      boosterMotorId: 'i285',
+      stageDelaySec: 0.8
+    },
+    check(state) {
+      if (state.twoStage && state.landedOk && state.maxAltM >= 1500) {
+        return {
+          ok: true,
+          msg: `Двухступенчатая схема работает! Апогей ${state.maxAltM.toFixed(0)} м, Мах ${state.maxMach.toFixed(2)}.`
+        };
+      }
+      return {
+        ok: false,
+        progress: `Ступеней: ${state.twoStage ? 2 : 1} · Апогей ${state.maxAltM.toFixed(0)} м (цель ≥ 1500) · ${state.flightStatusText}`
+      };
+    }
+  },
+  {
+    id: 'eng_motor',
+    lab: 'rocket',
+    track: 'Инженерный · 14–18 лет',
+    badge: 'RASP .eng',
+    title: '11. Импорт двигателя из RASP-файла .eng и сертификационный пуск',
+    desc: 'Настоящие двигатели описывают файлами RASP .eng (стандарт OpenRocket и ThrustCurve.org). Загрузите двигатель CosmoLab D12 из .eng-файла, проверьте класс по суммарному импульсу и выполните успешный пуск учебной модели.',
+    hint: 'Выберите в дереве компонент «МРД», нажмите «📄 Пример .eng» (или «📥 Импорт .eng» и укажите свой файл), затем «▶ Симуляция». Двигатель появится в списке как CosmoLab D12 (класс D).',
+    preset: {
+      caliberMm: 40,
+      noseShape: 'ogive',
+      noseLenMm: 110,
+      noseMassG: 10,
+      bodyMaterial: 'cardboard',
+      surfaceFinish: 'matte',
+      bodyLenMm: 400,
+      wallMm: 1.2,
+      hasCanSat: false,
+      payloadMassG: 30,
+      payloadPosFrac: 0.3,
+      finCount: 3,
+      finRootMm: 80,
+      finTipMm: 34,
+      finSpanMm: 60,
+      finSweepMm: 32,
+      finProfile: 'rounded',
+      finMaterial: 'balsa',
+      boatTailEnabled: false,
+      motorId: 'rd1_100',
+      deployMode: 'baro',
+      chuteDiamCm: 45
+    },
+    check(state) {
+      if (state.importedEng && state.simRan && state.maxAltM >= 60) {
+        return {
+          ok: true,
+          msg: `Двигатель из .eng работает! Класс ${state.motorClass}, импульс ${state.motorImpulseNs.toFixed(0)} Н·с, апогей ${state.maxAltM.toFixed(0)} м.`
+        };
+      }
+      return {
+        ok: false,
+        progress: `Двигатель: ${state.motorClass}${state.importedEng ? ' (из .eng)' : ' (встроенный)'} · Апогей: ${state.maxAltM.toFixed(0)} м (цель ≥ 60 м)`
       };
     }
   },
@@ -256,7 +397,7 @@ export const MISSIONS = [
     lab: 'sdr',
     track: 'Базовый · 12–16 лет',
     badge: 'УКВ и Web-SDR',
-    title: '10. Сеанс приёма снимка КА «Метеор-М» (Доплер)',
+    title: '12. Сеанс приёма снимка КА «Метеор-М» (Доплер)',
     desc: 'Примите пролёт российского метеоспутника «Метеор-М №2-4» (137.900 МГц). Наведите антенну и компенсируйте сдвиг Доплера так, чтобы декодировать ≥ 80% чистых строк.',
     hint: 'Включите «Автосопровождение антенны» или ведите ротор вручную за меткой КА, а ручкой расстройки SDR удерживайте сигнал по центру полосы приёма (или включите «Авто-Доплер»).',
     preset: {
@@ -283,7 +424,7 @@ export const MISSIONS = [
     lab: 'sdr',
     track: 'НТО «Анализ космоснимков»',
     badge: 'ДЗЗ · ИК + NDVI',
-    title: '11. Обнаружение лесных пожаров в тайге Приенисейской Сибири',
+    title: '13. Обнаружение лесных пожаров в тайге Приенисейской Сибири',
     desc: 'В видимом канале дымовой шлейф скрывает точные очаги горения. Используйте тепловой канал TIR (10.8 мкм) и индекс NDVI, чтобы отметить на карте все 3 очага лесного пожара.',
     hint: 'Переключитесь на «Анализ снимков ДЗЗ», выберите сцену «Сибирская тайга (пожары)», включите канал «Тепловой ИК (TIR)» и кликните мышью по 3 ярко-жёлтым температурным аномалиям.',
     preset: {
@@ -306,7 +447,7 @@ export const MISSIONS = [
     lab: 'sdr',
     track: 'Проектный · 13–17 лет',
     badge: 'Гидрология ДЗЗ',
-    title: '12. Мониторинг весеннего паводка в канале NIR',
+    title: '14. Мониторинг весеннего паводка в канале NIR',
     desc: 'Мутная паводковая вода в RGB почти неотличима от влажной почвы. Переключите снимок в ИК-синтез или NDVI и отметьте 3 участка опасного разлива реки.',
     hint: 'Вода сильно поглощает ближний инфракрасный свет (NIR < 0.08, NDVI < 0). Выберите сцену «Весенний паводок», включите «ИК-синтез (NIR)» или «Индекс NDVI» и отметьте 3 тёмные/синие зоны разлива.',
     preset: {
@@ -331,7 +472,7 @@ export const MISSIONS = [
     lab: 'lss',
     track: 'Стык с химией · 12–17 лет',
     badge: 'Авария СЖО',
-    title: '13. Нештатная ситуация: отказ «Воздуха» и рост CO₂',
+    title: '15. Нештатная ситуация: отказ «Воздуха» и рост CO₂',
     desc: 'На станции 4 космонавта, парциальное давление CO₂ достигло опасных 7.8 мм рт. ст.! Включите поглотители LiOH / цеолитовый блок и стабилизируйте p(CO₂) < 3.0 мм рт. ст. при норме O₂.',
     hint: 'Увеличьте мощность адсорбера «Воздух» или активируйте аварийные патроны гидроксида лития (2LiOH + CO₂ → Li₂CO₃ + H₂O) и проверьте подачу электролиза «Электрон-ВМ».',
     preset: {
@@ -363,7 +504,7 @@ export const MISSIONS = [
     lab: 'lss',
     track: 'Проектный · 14–18 лет',
     badge: 'Реактор Сабатье',
-    title: '14. Замкнутый контур для экспедиции из 6 космонавтов',
+    title: '16. Замкнутый контур для экспедиции из 6 космонавтов',
     desc: 'Электролиз воды выделяет взрывоопасный водород H₂. Сбалансируйте «Электрон-ВМ», «Воздух» и реактор Сабатье (CO₂ + 4H₂ → CH₄ + 2H₂O) на протяжении 60 мин полёта без аварий.',
     hint: 'Для 6 космонавтов поставьте «Электрон-ВМ» ~75%, «Воздух» ~80% и включите реактор Сабатье ~75%, чтобы связывать водород с углекислым газом обратно в воду.',
     preset: {
@@ -403,7 +544,7 @@ export const MISSIONS = [
     lab: 'lss',
     track: 'Базовый · 12–15 лет',
     badge: 'Теплообмен СТР',
-    title: '15. Перегрев станции на солнечной стороне орбиты',
+    title: '17. Перегрев станции на солнечной стороне орбиты',
     desc: 'Радиаторы системы терморегулирования (СТР) раскрыты лишь на 15%, температура в модуле выросла до +32 °C! Приведите температуру каюты в диапазон 20–24 °C и удержите 20 мин.',
     hint: 'Увеличьте площадь отвода тепла наружных аммиачных радиаторов СТР до 60–75% и следите за переходом в тень Земли на витке.',
     preset: {
