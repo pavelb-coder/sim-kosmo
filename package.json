@@ -1,0 +1,10 @@
+{
+  "name": "sim-kosmo",
+  "version": "1.0.0",
+  "description": "КосмоЛаб — виртуальные лаборатории и практикумы для Космоквантума",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "license": "MIT"
+}
