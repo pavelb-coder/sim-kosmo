@@ -5,6 +5,7 @@ import { SdrLab } from './labs/sdr.js';
 import { LssLab } from './labs/lss.js';
 import { MISSIONS } from './data/missions.js';
 import { renderReferenceModal } from './data/reference.js';
+import { MoodleBridge } from './integration/moodle.js';
 
 function encodeStateParam(obj) {
   const bytes = new TextEncoder().encode(JSON.stringify(obj));
@@ -46,6 +47,11 @@ class CosmoLabApp {
     this.bindMissionBar();
     this.bindModals();
     this.bindFileDrop();
+
+    // Мост с Moodle (mod_cosmolab): работает только внутри iframe элемента курса.
+    this.bridge = new MoodleBridge(this);
+    this.bridge.init();
+
     this.parseInitialUrl();
 
     this.lastTime = performance.now();
@@ -104,6 +110,8 @@ class CosmoLabApp {
     if (updateUrl) {
       this.syncUrlBar();
     }
+
+    if (this.bridge) this.bridge.labChanged(key);
   }
 
   startMission(missionId, updateUrl = true) {
@@ -122,6 +130,8 @@ class CosmoLabApp {
     if (updateUrl) {
       this.syncUrlBar();
     }
+
+    if (this.bridge) this.bridge.missionStart(m);
   }
 
   clearMission() {
@@ -129,6 +139,7 @@ class CosmoLabApp {
     this.missionDoneInSession = false;
     document.getElementById('mission-bar').classList.add('hidden');
     this.syncUrlBar();
+    if (this.bridge) this.bridge.missionCleared();
   }
 
   renderMissionBar() {
@@ -506,10 +517,12 @@ class CosmoLabApp {
         this.saveCompleted();
         this.renderMissionBar();
         this.toast('🎉 Задание зачтено! ' + res.msg, 'success');
+        if (this.bridge) this.bridge.missionComplete(this.activeMission, res);
       }
       if (progEl) progEl.textContent = res.msg;
     } else if (progEl && !this.missionDoneInSession) {
       progEl.textContent = res.progress || '';
+      if (this.bridge) this.bridge.missionProgress(this.activeMission, res);
     }
   }
 }
